@@ -2,7 +2,13 @@ import random
 import streamlit as st
 
 # Create a deck of cards
-deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'] * 24
+deck = []
+
+# Define a function to create a new deck
+def new_deck():
+    global deck
+    deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'] * 24
+    random.shuffle(deck)
 
 # Define a function to calculate the value of a hand
 def calculate_hand(hand):
@@ -23,7 +29,7 @@ def calculate_hand(hand):
     return value
 
 # Define a function to play the dealer's turn
-def dealer_turn(deck, dealer_hand):
+def dealer_turn(dealer_hand):
     while calculate_hand(dealer_hand) < 17:
         dealer_hand.append(deck.pop())
 
@@ -45,9 +51,7 @@ def basic_strategy(player_hand, dealer_card):
 def play_blackjack():
     # Check if the deck needs to be reshuffled
     if len(deck) < 52:
-        global deck
-        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'] * 24
-        random.shuffle(deck)
+        new_deck()
 
     # Deal the cards
     dealer_hand = [deck.pop(), deck.pop()]
@@ -61,7 +65,7 @@ def play_blackjack():
             return 'loss'
 
     # Play the dealer's turn
-    dealer_turn(deck, dealer_hand)
+    dealer_turn(dealer_hand)
 
     # Determine the winner
     dealer_value = calculate_hand(dealer_hand)
