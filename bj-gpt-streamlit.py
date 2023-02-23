@@ -78,34 +78,42 @@ def basic_strategy(player_hand, dealer_card, num_splits, can_double, can_surrend
 
 
 # Define a function to play a game of blackjack
-def play_blackjack():
-    # Check if the deck needs to be reshuffled
-    if len(deck) < 52:
-        new_deck()
+def play_blackjack(num_decks, num_hands, can_double, can_surrender):
+    global deck
+    wins = 0
+    losses = 0
+    pushes = 0
+    for i in range(num_hands):
+        if len(deck) < num_decks * 52 / 4:
+            new_deck()
+        dealer_hand = [deck.pop(), deck.pop()]
+        player_hand = [deck.pop(), deck.pop()]
+        player_busted = False
+        while basic_strategy(player_hand, dealer_hand[0], 0, can_double, can_surrender) == 'hit':
+            player_hand.append(deck.pop())
+            if calculate_hand(player_hand) > 21:
+                player_busted = True
+                break
+        if player_busted:
+            losses += 1
+        else:
+            dealer_turn(dealer_hand)
+            dealer_total = calculate_hand(dealer_hand)
+            player_total = calculate_hand(player_hand)
+            if dealer_total > 21:
+                wins += 1
+            elif player_total > 21:
+                losses += 1
+            elif player_total > dealer_total:
+                wins += 1
+            elif player_total < dealer_total:
+                losses += 1
+            else:
+                pushes += 1
+    st.write(f"Wins: {wins}/{num_hands}")
+    st.write(f"Losses: {losses}/{num_hands}")
+    st.write(f"Pushes: {pushes}/{num_hands}")
 
-    # Deal the cards
-    dealer_hand = [deck.pop(), deck.pop()]
-    player_hand = [deck.pop(), deck.pop()]
-
-    # Play the player's turn using basic strategy
-    while basic_strategy(player_hand, dealer_hand[0]) == 'hit':
-        player_hand.append(deck.pop())
-        if calculate_hand(player_hand) > 21:
-            #st.write(f"Bust! Your hand is {player_hand}")
-            return 'loss'
-
-    # Play the dealer's turn
-    dealer_turn(dealer_hand)
-
-    # Determine the winner
-    dealer_value = calculate_hand(dealer_hand)
-    player_value = calculate_hand(player_hand)
-    if dealer_value > 21 or player_value > dealer_value:
-        return 'win'
-    elif player_value == dealer_value:
-        return 'push'
-    else:
-        return 'loss'
 
 # Set up the Streamlit app
 st.title("Blackjack Simulator")
