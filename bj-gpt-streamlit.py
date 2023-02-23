@@ -125,6 +125,9 @@ if button:
     wins = 0
     losses = 0
     pushes = 0
+    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
+    
+"""    
     for i in range(num_hands):
         result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
         if result == 'win':
@@ -138,3 +141,4 @@ if button:
     st.write(f"Wins: {wins}")
     st.write(f"Losses: {losses}")
     st.write(f"Pushes: {pushes}")
+"""
