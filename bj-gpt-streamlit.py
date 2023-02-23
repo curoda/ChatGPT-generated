@@ -61,7 +61,7 @@ def play_blackjack():
     while basic_strategy(player_hand, dealer_hand[0]) == 'hit':
         player_hand.append(deck.pop())
         if calculate_hand(player_hand) > 21:
-            st.write(f"Bust! Your hand is {player_hand}")
+            #st.write(f"Bust! Your hand is {player_hand}")
             return 'loss'
 
     # Play the dealer's turn
