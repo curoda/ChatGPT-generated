@@ -126,7 +126,7 @@ if button:
     losses = 0
     pushes = 0
     for i in range(num_hands):
-        result = play_blackjack()
+        result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
         if result == 'win':
             wins += 1
         elif result == 'loss':
