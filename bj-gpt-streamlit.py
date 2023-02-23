@@ -34,8 +34,37 @@ def dealer_turn(dealer_hand):
         dealer_hand.append(deck.pop())
 
 # Define a function to simulate the player's decision using basic strategy
-def basic_strategy(player_hand, dealer_card):
+def basic_strategy(player_hand, dealer_card, num_splits, can_double, can_surrender):
     player_total = calculate_hand(player_hand)
+    if num_splits > 0 and player_hand[0] == player_hand[1]:
+        if player_hand[0] in [2, 3] and dealer_card in [2, 3, 4, 5, 6, 7]:
+            return 'split'
+        elif player_hand[0] in [4, 5] and dealer_card in [2, 3, 4, 5, 6]:
+            return 'split'
+        elif player_hand[0] == 6 and dealer_card in [2, 3, 4, 5, 6]:
+            return 'split'
+        elif player_hand[0] == 7 and dealer_card in [2, 3, 4, 5, 6]:
+            return 'split' if num_splits < 3 else 'hit'
+        elif player_hand[0] == 8 and dealer_card in [2, 3, 4, 5, 6]:
+            return 'split'
+        elif player_hand[0] == 9 and dealer_card in [2, 3, 4, 5, 6, 8, 9]:
+            return 'split' if num_splits < 3 else 'stand'
+        elif player_hand[0] == 10 and dealer_card in [2, 3, 4, 5, 6, 7, 8, 9]:
+            return 'split'
+        elif player_hand[0] == 'A' and dealer_card in [2, 3, 4, 5, 6, 8, 9, 10, 'A']:
+            return 'split' if num_splits < 3 else 'stand'
+    if can_double and player_total in [9, 10, 11]:
+        if player_total == 9 and dealer_card in [2, 3, 4, 5, 6, 8, 9]:
+            return 'double'
+        elif player_total == 10 and dealer_card in [2, 3, 4, 5, 6, 7, 8, 9]:
+            return 'double'
+        elif player_total == 11 and dealer_card in [2, 3, 4, 5, 6, 7, 8, 9, 10, 'A']:
+            return 'double'
+    if can_surrender and player_total in [15, 16]:
+        if player_total == 15 and dealer_card in [9, 10, 'A']:
+            return 'surrender'
+        elif player_total == 16 and dealer_card in [9, 10, 'A', 7]:
+            return 'surrender'
     if player_total >= 17:
         return 'stand'
     elif player_total <= 11:
@@ -46,6 +75,7 @@ def basic_strategy(player_hand, dealer_card):
         return 'stand'
     else:
         return 'hit'
+
 
 # Define a function to play a game of blackjack
 def play_blackjack():
