@@ -155,7 +155,7 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
 st.title("Blackjack Simulator")
 num_hands = st.slider("How many hands do you want to play?", min_value=100, max_value=3000, value=200, step=50)
 bet = st.slider ("How much do you want to bet per hand?", min_value=10, max_value=100, value=20, step=5)
-winings_to_stop = st.slider ("How much do you need to win to stop?" min_value=10, max_value=500, value=100, step=5)
+winings_to_stop = st.slider ("How much do you need to win to stop?", min_value=10, max_value=500, value=100, step=5)
 button = st.button("Play")
 
 if button:
