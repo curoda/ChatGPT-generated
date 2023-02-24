@@ -80,39 +80,72 @@ def basic_strategy(player_hand, dealer_card, num_splits, can_double, can_surrend
 # Define a function to play a game of blackjack
 def play_blackjack(num_decks, num_hands, can_double, can_surrender):
     global deck
-    wins = 0
-    losses = 0
-    pushes = 0
+    total_winnings = 0
+    num_splits = 0
+    num_double_downs = 0
+    num_surrenders = 0
     for i in range(num_hands):
         if len(deck) < num_decks * 52 / 4:
             new_deck()
         dealer_hand = [deck.pop(), deck.pop()]
         player_hand = [deck.pop(), deck.pop()]
+        can_split = num_splits < 3 and player_hand[0] == player_hand[1]
         player_busted = False
-        while basic_strategy(player_hand, dealer_hand[0], 0, can_double, can_surrender) == 'hit':
+        while basic_strategy(player_hand, dealer_hand[0], num_splits, can_double, can_surrender) == 'hit':
             player_hand.append(deck.pop())
             if calculate_hand(player_hand) > 21:
                 player_busted = True
                 break
         if player_busted:
-            losses += 1
+            total_winnings -= 10
         else:
-            dealer_turn(dealer_hand)
-            dealer_total = calculate_hand(dealer_hand)
-            player_total = calculate_hand(player_hand)
-            if dealer_total > 21:
-                wins += 1
-            elif player_total > 21:
-                losses += 1
-            elif player_total > dealer_total:
-                wins += 1
-            elif player_total < dealer_total:
-                losses += 1
-            else:
-                pushes += 1
-    st.write(f"Wins: {wins}/{num_hands}")
-    st.write(f"Losses: {losses}/{num_hands}")
-    st.write(f"Pushes: {pushes}/{num_hands}")
+            # Check for a split
+            if can_split:
+                num_splits += 1
+                player_hand_1 = [player_hand[0], deck.pop()]
+                player_hand_2 = [player_hand[1], deck.pop()]
+                can_split_1 = num_splits < 3 and player_hand_1[0] == player_hand_1[1]
+                can_split_2 = num_splits < 3 and player_hand_2[0] == player_hand_2[1]
+                if basic_strategy(player_hand_1, dealer_hand[0], num_splits, can_double, can_surrender) == 'stand':
+                    dealer_turn(dealer_hand)
+                else:
+                    while basic_strategy(player_hand_1, dealer_hand[0], num_splits, can_double, can_surrender) == 'hit':
+                        player_hand_1.append(deck.pop())
+                        if calculate_hand(player_hand_1) > 21:
+                            break
+                    dealer_turn(dealer_hand)
+                if basic_strategy(player_hand_2, dealer_hand[0], num_splits, can_double, can_surrender) == 'stand':
+                    dealer_turn(dealer_hand)
+                else:
+                    while basic_strategy(player_hand_2, dealer_hand[0], num_splits, can_double, can_surrender) == 'hit':
+                        player_hand_2.append(deck.pop())
+                        if calculate_hand(player_hand_2) > 21:
+                            break
+                    dealer_turn(dealer_hand)
+                player_total_1 = calculate_hand(player_hand_1)
+                dealer_total = calculate_hand(dealer_hand)
+                if player_total_1 > 21:
+                    total_winnings -= 10
+                elif dealer_total > 21:
+                    total_winnings += 10
+                elif player_total_1 > dealer_total:
+                    total_winnings += 10
+                elif player_total_1 < dealer_total:
+                    total_winnings -= 10
+                # Handle the case of a push (tie)
+                else:
+                    total_winnings += 0
+                player_total_2 = calculate_hand(player_hand_2)
+                dealer_total = calculate_hand(dealer_hand)
+                if player_total_2 > 21:
+                    total_winnings -= 10
+                elif dealer_total > 21:
+                    total_winnings += 10
+                elif player_total_2 > dealer_total:
+                    total_winnings += 10
+
+    st.write(f"Winnings: {total_winnings}")
+  
 
 
 # Set up the Streamlit app
