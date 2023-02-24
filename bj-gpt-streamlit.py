@@ -78,15 +78,15 @@ def basic_strategy(player_hand, dealer_card, num_splits, can_double, can_surrend
 
 
 # Define a function to play a game of blackjack
-def play_blackjack(num_decks, num_hands, can_double, can_surrender):
+def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
     global deck
     total_winnings = 0
     num_splits = 0
     num_double_downs = 0
     num_surrenders = 0
     for i in range(num_hands):
-         # Check if total_winnings is greater than or equal to 20
-        if total_winnings >= 20:
+         # Check if total_winnings is greater than or equal to the winnings to stop
+        if total_winnings >= stop:
             break
         if len(deck) < num_decks * 52 / 4:
             new_deck()
@@ -153,7 +153,9 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender):
 
 # Set up the Streamlit app
 st.title("Blackjack Simulator")
-num_hands = st.slider("How many hands do you want to play?", min_value=1, max_value=1000, value=200)
+num_hands = st.slider("How many hands do you want to play?", min_value=100, max_value=3000, value=200, step=50)
+bet = st.slider ("How much do you want to bet per hand?", min_value=10, max_value=100, value=20, step=5)
+winings_to_stop = st.slider ("How much do you need to win to stop?" min_value=10, max_value=500, value=100, step=5)
 button = st.button("Play")
 
 if button:
@@ -161,7 +163,7 @@ if button:
     wins = 0
     losses = 0
     pushes = 0
-    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
+    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True, bet=bet, stop=winings_to_stop)
         
    # for i in range(num_hands):
     #    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
