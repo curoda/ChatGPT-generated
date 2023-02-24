@@ -85,6 +85,9 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender):
     num_double_downs = 0
     num_surrenders = 0
     for i in range(num_hands):
+         # Check if total_winnings is greater than or equal to 20
+        if total_winnings >= 20:
+            break
         if len(deck) < num_decks * 52 / 4:
             new_deck()
         dealer_hand = [deck.pop(), deck.pop()]
