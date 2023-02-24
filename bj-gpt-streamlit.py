@@ -100,7 +100,7 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
                 player_busted = True
                 break
         if player_busted:
-            total_winnings -= 10
+            total_winnings -= bet
         else:
             # Check for a split
             if can_split:
@@ -128,24 +128,24 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
                 player_total_1 = calculate_hand(player_hand_1)
                 dealer_total = calculate_hand(dealer_hand)
                 if player_total_1 > 21:
-                    total_winnings -= 10
+                    total_winnings -= bet
                 elif dealer_total > 21:
-                    total_winnings += 10
+                    total_winnings += bet
                 elif player_total_1 > dealer_total:
-                    total_winnings += 10
+                    total_winnings += bet
                 elif player_total_1 < dealer_total:
-                    total_winnings -= 10
+                    total_winnings -= bet
                 # Handle the case of a push (tie)
                 else:
                     total_winnings += 0
                 player_total_2 = calculate_hand(player_hand_2)
                 dealer_total = calculate_hand(dealer_hand)
                 if player_total_2 > 21:
-                    total_winnings -= 10
+                    total_winnings -= bet
                 elif dealer_total > 21:
-                    total_winnings += 10
+                    total_winnings += bet
                 elif player_total_2 > dealer_total:
-                    total_winnings += 10
+                    total_winnings += bet
 
     st.write(f"Winnings: {total_winnings}")
   
