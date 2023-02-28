@@ -249,7 +249,7 @@ def play_blackjack(num_hands, bet, min_win_amount, max_loss_amount):
             dealer_hand.append(deal_card(deck))
 
         # Calculate the winnings or losses from the hand
-        winnings = calculate_hand_winnings(player_hand, dealer_hand)
+        winnings = calculate_hand_winnings(player_hand, dealer_hand, bet_amount)
         total_winnings += winnings
         num_hands_played += 1
 
