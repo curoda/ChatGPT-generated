@@ -163,74 +163,98 @@ def basic_strategy(player_hand, dealer_card):
 
 
 # Define a function to play a game of blackjack
-def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
-    global deck
-    total_winnings = 0
-    num_splits = 0
-    num_double_downs = 0
-    num_surrenders = 0
-    for i in range(num_hands):
-         # Check if total_winnings is greater than or equal to the winnings to stop
-        if total_winnings >= stop:
-            break
-        if len(deck) < num_decks * 52 / 4:
-            new_deck()
-        dealer_hand = [deck.pop(), deck.pop()]
-        player_hand = [deck.pop(), deck.pop()]
-        can_split = num_splits < 3 and player_hand[0] == player_hand[1]
-        player_busted = False
-        while basic_strategy(player_hand, dealer_hand[0]) == 'hit':
-            player_hand.append(deck.pop())
-            if calculate_hand(player_hand) > 21:
-                player_busted = True
-                break
-        if player_busted:
-            total_winnings -= bet
+def play_blackjack(num_hands, bet, min_win_amount, max_loss_amount):
+    """
+    Plays multiple hands of blackjack using a perfect strategy and returns the total winnings.
+    Args:
+    - num_hands: an integer representing the number of hands to play
+    - bet_amount: an integer representing the amount to bet on each hand
+    - min_win_amount: an integer representing the minimum amount to win before stopping
+    - max_loss_amount: an integer representing the maximum amount to lose before stopping
+    Returns:
+    - An integer representing the total winnings or losses
+    """
+
+    # Create a deck of cards (hardcoded in a 6 deck shuffle)
+    deck = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"] * 24
+
+    # Helper function to shuffle the deck
+    def shuffle_deck(deck):
+        random.shuffle(deck)
+
+    # Helper function to deal a card
+    def deal_card(deck):
+        return deck.pop()
+
+    # Helper function to calculate the winnings or losses from a single hand
+    def calculate_hand_winnings(player_hand, dealer_hand, bet_amount):
+    player_hand_value = get_hand_value(player_hand)
+    dealer_hand_value = get_hand_value(dealer_hand)
+    if player_hand_value > 21:
+        return -bet_amount
+    elif dealer_hand_value > 21 or player_hand_value > dealer_hand_value or (player_hand_value == 21 and len(player_hand) == 2 and dealer_hand_value != 21):
+        if player_hand_value == 21 and len(player_hand) == 2:
+            return int(1.5 * bet_amount)
         else:
-            # Check for a split
-            if can_split:
-                num_splits += 1
-                player_hand_1 = [player_hand[0], deck.pop()]
-                player_hand_2 = [player_hand[1], deck.pop()]
-                can_split_1 = num_splits < 3 and player_hand_1[0] == player_hand_1[1]
-                can_split_2 = num_splits < 3 and player_hand_2[0] == player_hand_2[1]
-                if basic_strategy(player_hand_1, dealer_hand[0]) == 'stand':
-                    dealer_turn(dealer_hand)
-                else:
-                    while basic_strategy(player_hand_1, dealer_hand[0]) == 'hit':
-                        player_hand_1.append(deck.pop())
-                        if calculate_hand(player_hand_1) > 21:
-                            break
-                    dealer_turn(dealer_hand)
-                if basic_strategy(player_hand_2, dealer_hand[0]) == 'stand':
-                    dealer_turn(dealer_hand)
-                else:
-                    while basic_strategy(player_hand_2, dealer_hand[0]) == 'hit':
-                        player_hand_2.append(deck.pop())
-                        if calculate_hand(player_hand_2) > 21:
-                            break
-                    dealer_turn(dealer_hand)
-                player_total_1 = calculate_hand(player_hand_1)
-                dealer_total = calculate_hand(dealer_hand)
-                if player_total_1 > 21:
-                    total_winnings -= bet
-                elif dealer_total > 21:
-                    total_winnings += bet
-                elif player_total_1 > dealer_total:
-                    total_winnings += bet
-                elif player_total_1 < dealer_total:
-                    total_winnings -= bet
-                # Handle the case of a push (tie)
-                else:
-                    total_winnings += 0
-                player_total_2 = calculate_hand(player_hand_2)
-                dealer_total = calculate_hand(dealer_hand)
-                if player_total_2 > 21:
-                    total_winnings -= bet
-                elif dealer_total > 21:
-                    total_winnings += bet
-                elif player_total_2 > dealer_total:
-                    total_winnings += bet
+            return bet_amount
+    elif player_hand_value == dealer_hand_value:
+        return 0
+    else:
+        return -bet_amount
+
+
+    # Play multiple hands of blackjack
+    total_winnings = 0
+    num_hands_played = 0
+    while num_hands_played < num_hands and total_winnings >= -max_loss_amount and total_winnings <= min_win_amount:
+        # Shuffle the deck (hardcoded in a 6 deck shuffle)
+        if len(deck) < 6 * 52 / 4:
+            shuffle_deck(deck)
+
+        # Deal the player's and dealer's initial hands
+        player_hand = [deal_card(deck), deal_card(deck)]
+        dealer_hand = [deal_card(deck), deal_card(deck)]
+
+        # Play the player's hand
+        while True:
+            action = blackjack_strategy(player_hand, dealer_hand[0])
+            if action == "hit":
+                player_hand.append(deal_card(deck))
+            elif action == "stand":
+                break
+            elif action == "double":
+                player_hand.append(deal_card(deck))
+                bet_amount *= 2
+                break
+            elif action == "split":
+                hand1 = [player_hand[0], deal_card(deck)]
+                hand2 = [player_hand[1], deal_card(deck)]
+                winnings1 = calculate_hand_winnings(hand1, dealer_hand, bet_amount)
+                winnings2 = calculate_hand_winnings(hand2, dealer_hand, bet_amount)
+                total_winnings += winnings1 + winnings2
+                num_hands_played += 2
+                break
+            elif action == "surrender":
+                total_winnings -= 0.5 * bet_amount
+                num_hands_played += 1
+                break
+
+            if get_hand_value(player_hand) > 21:
+                total_winnings -= bet_amount
+                num_hands_played += 1
+                break
+
+        # Play the dealer's hand
+        while get_hand_value(dealer_hand) < 17:
+            dealer_hand.append(deal_card(deck))
+
+        # Calculate the winnings or losses from the hand
+        winnings = calculate_hand_winnings(player_hand, dealer_hand)
+        total_winnings += winnings
+        num_hands_played += 1
+
+    # Return the total winnings or losses
+    return total_winnings
 
     st.write(f"Winnings: {total_winnings}")
   
@@ -238,9 +262,10 @@ def play_blackjack(num_decks, num_hands, can_double, can_surrender, bet, stop):
 
 # Set up the Streamlit app
 st.title("Blackjack Simulator")
-num_hands = st.slider("How many hands do you want to play?", min_value=100, max_value=3000, value=200, step=50)
-bet = st.slider ("How much do you want to bet per hand?", min_value=10, max_value=100, value=20, step=5)
-winings_to_stop = st.slider ("How much do you need to win to stop?", min_value=10, max_value=500, value=100, step=5)
+num_hands_slider = st.slider("How many hands do you want to play?", min_value=100, max_value=3000, value=200, step=50)
+bet_slider = st.slider ("How much do you want to bet per hand?", min_value=10, max_value=100, value=20, step=5)
+min_win_slider = st.slider ("How much do you need to win to stop?", min_value=10, max_value=500, value=100, step=5)
+max_loss_slider = st.slider ("How much do you need to lose to stop?", min_value=100, max_value=500, value=200, step=50)
 button = st.button("Play")
 
 if button:
@@ -248,7 +273,7 @@ if button:
     wins = 0
     losses = 0
     pushes = 0
-    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True, bet=bet, stop=winings_to_stop)
+    result = play_blackjack(num_hands=num_hands_slider, bet=bet_slider, min_win_amount=min_win_slider, max_loss_amount=max_loss_slider)
         
    # for i in range(num_hands):
     #    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
