@@ -27,16 +27,20 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
 
     # Helper function to calculate the winnings or losses from a single hand
     def calculate_hand_winnings(player_hand, dealer_hand, bet_amount):
-        player_hand_value = get_hand_value(player_hand)
-        dealer_hand_value = get_hand_value(dealer_hand)
-        if player_hand_value > 21:
-            return -bet_amount
-        elif dealer_hand_value > 21 or player_hand_value > dealer_hand_value:
-            return bet_amount
-        elif player_hand_value == dealer_hand_value:
-            return 0
+    player_hand_value = get_hand_value(player_hand)
+    dealer_hand_value = get_hand_value(dealer_hand)
+    if player_hand_value > 21:
+        return -bet_amount
+    elif dealer_hand_value > 21 or player_hand_value > dealer_hand_value or (player_hand_value == 21 and len(player_hand) == 2 and dealer_hand_value != 21):
+        if player_hand_value == 21 and len(player_hand) == 2:
+            return int(1.5 * bet_amount)
         else:
-            return -bet_amount
+            return bet_amount
+    elif player_hand_value == dealer_hand_value:
+        return 0
+    else:
+        return -bet_amount
+
 
     # Play multiple hands of blackjack
     total_winnings = 0
