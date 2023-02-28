@@ -163,7 +163,7 @@ def blackjack_strategy(player_hand, dealer_card):
 
 
 # Define a function to play a game of blackjack
-def play_blackjack(num_hands, bet, min_win_amount, max_loss_amount):
+def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
     """
     Plays multiple hands of blackjack using a perfect strategy and returns the total winnings.
     Args:
@@ -273,7 +273,7 @@ if button:
     wins = 0
     losses = 0
     pushes = 0
-    result = play_blackjack(num_hands=num_hands_slider, bet=bet_slider, min_win_amount=min_win_slider, max_loss_amount=max_loss_slider)
+    result = play_blackjack(num_hands=num_hands_slider, bet_amount=bet_slider, min_win_amount=min_win_slider, max_loss_amount=max_loss_slider)
         
    # for i in range(num_hands):
     #    result = play_blackjack(num_decks=6, num_hands=num_hands, can_double=True, can_surrender=True)
