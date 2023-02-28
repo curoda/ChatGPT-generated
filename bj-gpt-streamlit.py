@@ -255,7 +255,7 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
 
     # Return the total winnings or losses
     st.write(f"Winnings: {total_winnings}")
-    return total_winnings
+    total_winnings = 0
 
 
 # Set up the Streamlit app
