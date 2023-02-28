@@ -34,7 +34,7 @@ def dealer_turn(dealer_hand):
         dealer_hand.append(deck.pop())
 
 # Define a function to simulate the player's decision using basic strategy
-def basic_strategy(player_hand, dealer_card):
+def blackjack_strategy(player_hand, dealer_card):
     """
     Implements a perfect blackjack strategy based on the player's hand and the dealer's up card.
     Args:
