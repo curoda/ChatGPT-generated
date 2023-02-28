@@ -32,6 +32,22 @@ def calculate_hand(hand):
 def dealer_turn(dealer_hand):
     while calculate_hand(dealer_hand) < 17:
         dealer_hand.append(deck.pop())
+        
+# Helper function to get the value of a card
+def get_card_value(card):
+    if card in ["J", "Q", "K"]:
+        return 10
+    elif card == "A":
+        return 11
+    else:
+        return int(card)
+
+# Helper function to get the value of a hand
+def get_hand_value(hand):
+    value = sum(get_card_value(card) for card in hand)
+    if value > 21 and "A" in hand:
+        value -= 10
+    return value
 
 # Define a function to simulate the player's decision using basic strategy
 def blackjack_strategy(player_hand, dealer_card):
@@ -50,22 +66,6 @@ def blackjack_strategy(player_hand, dealer_card):
 
     def is_pair(hand):
         return len(hand) == 2 and hand[0] == hand[1]
-
-    # Helper function to get the value of a card
-    def get_card_value(card):
-        if card in ["J", "Q", "K"]:
-            return 10
-        elif card == "A":
-            return 11
-        else:
-            return int(card)
-
-    # Helper function to get the value of a hand
-    def get_hand_value(hand):
-        value = sum(get_card_value(card) for card in hand)
-        if value > 21 and "A" in hand:
-            value -= 10
-        return value
 
     # Helper function to check if a hand can be doubled
     def can_double(hand):
