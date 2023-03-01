@@ -224,10 +224,12 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
             if action == "hit":
                 player_hand.append(deal_card(deck))
             elif action == "stand":
+                st.write(f"player hand: {player_hand}")
                 break
             elif action == "double":
                 player_hand.append(deal_card(deck))
                 bet_amount *= 2
+                st.write(f"player hand: {player_hand}")
                 break
             elif action == "split":
                 hand1 = [player_hand[0], deal_card(deck)]
@@ -236,18 +238,20 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
                 winnings2 = calculate_hand_winnings(hand2, dealer_hand, bet_amount)
                 total_winnings += winnings1 + winnings2
                 num_hands_played += 2
+                st.write(f"player hand if split: {hand1}, {hand2}")
                 break
             elif action == "surrender":
                 total_winnings -= 0.5 * bet_amount
                 num_hands_played += 1
+                st.write(f"player hand: {player_hand}")
                 break
 
             if get_hand_value(player_hand) > 21:
                 total_winnings -= bet_amount
                 num_hands_played += 1
+                st.write(f"player hand: {player_hand}")
                 break
-            st.write(f"player hand: {player_hand}")
-            st.write(f"player hand if split: {hand1}, {hand2}")
+            
 
         # Play the dealer's hand
         while get_hand_value(dealer_hand) < 17:
