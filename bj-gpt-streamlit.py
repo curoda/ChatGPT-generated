@@ -243,13 +243,13 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
                 st.write(f"player hand if split: {hand1}, {hand2}")
                 break
             elif action == "surrender":
-                total_winnings -= 0.5 * bet_amount
+                bet_amount -= 0.5 * bet_amount
                 num_hands_played += 1
                 st.write(f"player hand: {player_hand}")
                 break
 
             if get_hand_value(player_hand) > 21:
-                total_winnings -= bet_amount
+                # total_winnings -= bet_amount
                 num_hands_played += 1
                 st.write(f"player hand: {player_hand}")
                 break
@@ -262,12 +262,15 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
         
 
         # Calculate the winnings or losses from the hand
-        winnings = calculate_hand_winnings(player_hand, dealer_hand, bet_amount)
+        if action != "split": 
+            winnings = calculate_hand_winnings(player_hand, dealer_hand, bet_amount)
         st.write(f"Hand result: {winnings}")
         st.write(f"Total before last hand: {total_winnings}")
         total_winnings += winnings
         st.write(f"Total: {total_winnings}")
         num_hands_played += 1
+        #reset the bet amount if it was lowered for a surrender, before playing next hand
+        bet_amount = bet_slider
 
     # Return the total winnings or losses
     st.write(f"Winnings: {total_winnings}")
