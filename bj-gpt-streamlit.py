@@ -247,7 +247,7 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
                 num_hands_played += 1
                 break
             st.write(f"player hand: {player_hand}")
-            st.write(f"player hand if split: {hand 1}, {hand 2}")
+            st.write(f"player hand if split: {hand1}, {hand2}")
 
         # Play the dealer's hand
         while get_hand_value(dealer_hand) < 17:
