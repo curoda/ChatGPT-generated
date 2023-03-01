@@ -264,6 +264,7 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
         # Calculate the winnings or losses from the hand
         winnings = calculate_hand_winnings(player_hand, dealer_hand, bet_amount)
         st.write(f"Hand result: {winnings}")
+        st.write(f"Total before last hand: {total_winnings}")
         total_winnings += winnings
         st.write(f"Total: {total_winnings}")
         num_hands_played += 1
