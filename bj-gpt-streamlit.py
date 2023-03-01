@@ -221,6 +221,7 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
         # Play the player's hand
         while True:
             action = blackjack_strategy(player_hand, dealer_hand[0])
+            st.write(f"action: {action}")
             if action == "hit":
                 player_hand.append(deal_card(deck))
             elif action == "stand":
