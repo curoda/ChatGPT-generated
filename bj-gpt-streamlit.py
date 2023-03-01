@@ -206,6 +206,7 @@ def play_blackjack(num_hands, bet_amount, min_win_amount, max_loss_amount):
     # Play multiple hands of blackjack
     total_winnings = 0
     num_hands_played = 0
+    shuffle_deck(deck)
     while num_hands_played < num_hands and total_winnings >= -max_loss_amount and total_winnings <= min_win_amount:
         # Shuffle the deck (hardcoded in a 6 deck shuffle)
         if len(deck) < 6 * 52 / 4:
